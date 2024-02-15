@@ -12,27 +12,28 @@ map<int, int> mp;
 //Từ linklist câpj nhật lại vào bảng
 //MÃ CODE ĐƯỢC QUY ĐỊNH LÀ XXXX
 
-
 struct Product{
     int code;
     string name;
     float price;
     int number;
 };
-
+template<class T>
 struct Prd{
-    Product s;
+    T s;
     Prd *next;
 };
 
+
+template <class T>
 int getCode(Product a) {
     return a.code;
 }
-
+template <class T>
 string getName(Product a) {
     return a.name;
 }
-
+template <class T>
 float getPrice(Product a) {
     return a.price;
 }
@@ -41,7 +42,7 @@ float getNumber(Product a) {
     return a.number;
 }
 
-typedef struct Prd* prd;
+typedef struct Prd<Product>* prd;
 
 int updateProduct(prd &a, char product[]) {
     ifstream prds(product);
@@ -62,7 +63,7 @@ int updateProduct(prd &a, char product[]) {
             prds.ignore(); 
 
 
-            prd newNode = new Prd();
+            prd newNode = new Prd<Product>();
             newNode->s = s;
             newNode->next = nullptr;
             if (a == nullptr) {
@@ -79,16 +80,16 @@ int updateProduct(prd &a, char product[]) {
     }
     return 0; 
 }
-
+template <class T>
 prd makeNode() {
-    Product s;
+    T s;
     cout << "Nhập thông tin sản phẩm: " << endl;
     cout << "Nhập mã sản phẩm: " << endl; cin >> s.code;
     cin.ignore();
     cout << "Nhập tên sản phẩm: " << endl; getline(cin, s.name);
     cout << "Nhập giá sản phẩm: " << endl; cin >> s.price;
     cout << "Nhập số lượng sản phẩm: " << endl; cin >> s.number;
-    prd tmp = new Prd();
+    prd tmp = new Prd<Product>();
     tmp->s = s;
     tmp->next = NULL;
     return tmp;
@@ -106,7 +107,7 @@ int Size(prd a) {
     }
     return cnt;
 }
-
+template<class T>
 void insertFirst(prd &a) {
     prd tmp = makeNode();
     if(a == NULL) {
@@ -116,10 +117,9 @@ void insertFirst(prd &a) {
         a = tmp;
     }
 }
-
+template <class T>
 void insertLast(prd &a) {
-    prd tmp = makeNode();
-    
+    prd tmp = makeNode<T>();
     if(a == NULL) {
         a = tmp;
     } else {
@@ -130,20 +130,20 @@ void insertLast(prd &a) {
         p->next = tmp;
     }
 }
-
+template <class T>
 void insertMiddle(prd &a, int pos) {
     int n = Size(a);
     if( pos <= 0 || pos > n + 1) {
         cout << "Vị trí cần chèn không hợp lệ!";
     }
     if( pos == 1 ) {
-        insertFirst(a);
+        insertFirst<T>(a);
     }
     else if (pos + 1 == n) {
-        insertLast(a);
+        insertLast<T>(a);
     }
     else{ 
-        prd tmp = makeNode();
+        prd tmp = makeNode<T>();
         prd p = a;
         for(int i = 0; i < pos; i++) {
             p = p->next;
@@ -192,6 +192,7 @@ void deleteMiddle(prd &a, int pos) {
     }
 }
 
+template <class T>
 int updateBoard(char product[], prd a) { 
     ofstream prds(product);
     if(!prds.is_open()) {
@@ -203,7 +204,7 @@ int updateBoard(char product[], prd a) {
         prd p = a;
         int k = 1;
         while(p != NULL) {
-            prds << k << "|" << getCode(p->s) << "|" << getName(p->s) << "|" << getPrice(p->s) << "|" << getNumber(p->s) << endl;
+            prds << k << "|" << getCode<T>(p->s) << "|" << getName<T>(p->s) << "|" << getPrice<T>(p->s) << "|" << getNumber<T>(p->s) << endl;
             k++;
             p = p->next;
         }
@@ -211,16 +212,17 @@ int updateBoard(char product[], prd a) {
     }
     return 0;
 }
-
-void in(Product s) {
+template <class T>
+void in(T s) {
     int k = 1;
     cout << getCode(s) << "|" << getName(s) << "|" << getPrice(s) << "|" << getNumber(s) << endl;
 }
 
+template <class T>
 void inds(prd a) {
     cout << "THIẾT BỊ THÔNG MINH CÔNG TY TIẾN LUẬT CUTE PHÔ MAI QUE" << endl;
     while(a != NULL) {
-        in(a->s);
+        in<T>(a->s);
         a = a->next;
     }
     cout << "....................THANK YOU...................";
@@ -240,7 +242,7 @@ void sortNumber(prd &a) {
         p->s = tmp;
     }
 }
-
+template<class T>
 void sortPrice(prd &a) {
     int n = Size(a);
     for(prd p = a; p->next != NULL; p = p->next) {
@@ -250,7 +252,7 @@ void sortPrice(prd &a) {
                 min = k;
             }
         }
-        Product tmp = min->s;
+        T tmp = min->s;
         min->s = p->s;
         p->s = tmp;
     }
@@ -323,9 +325,10 @@ void buyProduct(map<int, int> a, prd &n){
     }
     cout << "Số tiền bạn cần thanh toán là: " << Total << endl;
 }
+template<typename T>
+prd Products = new Prd<T>();
 
-prd Products = new Prd();
-
+template <class T>
 void managerSelect(char product[], char frequency[]){
     while(1) {
         cout << "-----QUẢN LÝ------" << endl;
@@ -358,10 +361,10 @@ void managerSelect(char product[], char frequency[]){
             empty(Products);
         }
         else if(k == 3) {
-            insertFirst(Products);
+            insertFirst<T>(Products);
         }
         else if(k == 4) {
-            insertLast(Products);
+            insertLast<T>(Products);
         }
         else if(k == 5) {
             int resInsert;
@@ -403,7 +406,7 @@ void managerSelect(char product[], char frequency[]){
         }
     }
 }
-
+template<class T>
 void customSelect(char product[], char frequency[]) {
     while(1) {
         cout << "----------KHACH HANG---------" << endl;
@@ -414,7 +417,7 @@ void customSelect(char product[], char frequency[]) {
         cout << "Nhap lua chon cua ban" << endl;
         int customSelect; cin >> customSelect;
         if(customSelect == 1) {
-            inds(Products);
+            inds<T>(Products);
         }
         else if(customSelect == 2) {
             buyProduct(mp, Products);
@@ -439,16 +442,16 @@ int main() {
         cout << "Nhập lựa chọn của bạn" << endl;
         int k; cin >> k;
         if(k == 1) {
-            managerSelect(product, frequency);
+            managerSelect<Product>(product, frequency);
         } 
         else if(k == 2) {
-            customSelect(product, frequency);
+            customSelect<Product>(product, frequency);
         }
         else if(k == 3) {
             break;
         }
     }
-    delete Products;
+    delete Products<Product>;
     return 0;
 }
 
